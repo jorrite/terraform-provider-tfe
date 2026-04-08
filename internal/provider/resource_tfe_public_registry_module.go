@@ -134,9 +134,10 @@ func (r *resourceTFEPublicRegistryModule) Schema(ctx context.Context, req resour
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"vcs_repo": schema.SingleNestedAttribute{
+		},
+		Blocks: map[string]schema.Block{
+			"vcs_repo": schema.SingleNestedBlock{
 				Description: "Settings for the registry module's VCS repository.",
-				Required:    true,
 				Attributes: map[string]schema.Attribute{
 					"identifier": schema.StringAttribute{
 						Description: "A reference to your VCS repository in the format <organization>/<repository>.",
@@ -195,6 +196,14 @@ func (r *resourceTFEPublicRegistryModule) Create(ctx context.Context, req resour
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if plan.VCSRepo == nil {
+		resp.Diagnostics.AddError(
+			"Missing required block",
+			"The vcs_repo block is required.",
+		)
 		return
 	}
 
