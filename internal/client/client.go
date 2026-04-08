@@ -77,6 +77,7 @@ func getTokenFromCreds(services *disco.Disco, hostname svchost.Hostname) string 
 // TFE Client along with other necessary information for the provider to run it
 type ProviderClient struct {
 	TfeClient   *tfe.Client
+	Token       string
 	tokenSource tokenSource
 }
 
@@ -109,7 +110,7 @@ func GetClient(tfeHost, token string, insecure bool) (*ProviderClient, error) {
 	// Try to retrieve the client from cache
 	cached := clientCache.GetByConfig(config)
 	if cached != nil {
-		return &ProviderClient{cached, config.tokenSource}, nil
+		return &ProviderClient{cached, config.Token, config.tokenSource}, nil
 	}
 
 	// Discover the Terraform Enterprise address.
@@ -173,7 +174,7 @@ func GetClient(tfeHost, token string, insecure bool) (*ProviderClient, error) {
 	client.RetryServerErrors(true)
 	clientCache.Set(client, config)
 
-	return &ProviderClient{client, config.tokenSource}, nil
+	return &ProviderClient{client, config.Token, config.tokenSource}, nil
 }
 
 // CheckConstraints checks service version constrains against our own

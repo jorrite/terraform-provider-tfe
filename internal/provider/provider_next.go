@@ -127,6 +127,7 @@ func (p *frameworkProvider) Configure(ctx context.Context, req provider.Configur
 	configuredClient := ConfiguredClient{
 		Client:       providerClient.TfeClient,
 		Organization: data.Organization.ValueString(),
+		Token:        providerClient.Token,
 	}
 
 	res.DataSourceData = configuredClient
@@ -196,6 +197,7 @@ func (p *frameworkProvider) Resources(ctx context.Context) []func() resource.Res
 		NewVaultOIDCConfigurationResource,
 		NewHYOKConfigurationResource,
 		NewProjectPolicySetExclusionResource,
+		NewPublicRegistryModuleResource,
 	}
 }
 

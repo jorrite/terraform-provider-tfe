@@ -26,6 +26,7 @@ var (
 type ConfiguredClient struct {
 	Client       *tfe.Client
 	Organization string
+	Token        string
 }
 
 func (c ConfiguredClient) schemaOrDefaultOrganization(resource *schema.ResourceData) (string, error) {
@@ -199,6 +200,7 @@ func configure() schema.ConfigureContextFunc {
 		return ConfiguredClient{
 			providerClient.TfeClient,
 			providerOrganization,
+			providerClient.Token,
 		}, diagnosticWarnings
 	}
 }
